@@ -1,0 +1,3 @@
+module KernelOps
+
+end # module

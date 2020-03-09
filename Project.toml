@@ -1,0 +1,15 @@
+name = "KernelOps"
+uuid = "96fb99f5-d28b-4914-8161-ce02e97273ad"
+authors = ["Francesco Alemanno <francescoalemanno710@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
+
+[compat]
+julia = "^1"
