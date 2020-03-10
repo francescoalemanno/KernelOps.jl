@@ -1,6 +1,6 @@
 using KernelOps
 using Test
-using BenchmarkTools
+
 @inline function op_mean(A,r,c)
     m=zero(eltype(A))
     @simd for i in r
@@ -29,6 +29,5 @@ end
 @testset "Basic Test" begin
     M=[exp(-(x-3)^2-(y-3)^2) for x in 1:5, y in 1:5]
     result=Bool[0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0]
-    @btime compare_kop($M,$result)
     @test compare_kop(M,result)
 end

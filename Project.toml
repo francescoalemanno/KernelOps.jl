@@ -3,9 +3,6 @@ uuid = "96fb99f5-d28b-4914-8161-ce02e97273ad"
 authors = ["Francesco Alemanno <francescoalemanno710@gmail.com>"]
 version = "0.1.0"
 
-[deps]
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
-
 [compat]
 julia = "^1.2"
 
