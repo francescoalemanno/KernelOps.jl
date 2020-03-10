@@ -16,8 +16,8 @@ struct KernelOp{T,N,S,F<:Function} <: AbstractArray{T,N}
 end
 
 @inline function KernelOp(op::F,A::AbstractArray{T,N},dims::NTuple{N,Int}) where {T,N,F<:Function}
-    v=CartesianIndices([first(A)])
-    testout=op(A,v,v[1])
+    v=CartesianIndices(ntuple(i->1,N))
+    testout=op(A,v,first(v))
     KernelOp{eltype(testout),ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
 end
 
