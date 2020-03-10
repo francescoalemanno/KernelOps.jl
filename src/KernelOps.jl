@@ -8,7 +8,7 @@ struct KernelOp{T,N,S,F<:Function} <: AbstractArray{T,N}
     opdims::CartesianIndex{N}
     lowbound::CartesianIndex{N}
     upbound::CartesianIndex{N}
-    @inline function KernelOp{T,N,S,F}(operation::F,A::S,dims::CartesianIndex{N}) where {T,N,S <: AbstractArray{T,N},F<:Function}
+    @inline function KernelOp{T,N,S,F}(operation::F,A::S,dims::CartesianIndex{N}) where {T,N,S<:AbstractArray,F<:Function}
         l=minimum(CartesianIndices(A))
         h=maximum(CartesianIndices(A))
         new{T,N,S,F}(A,operation,dims,l,h)
@@ -16,7 +16,9 @@ struct KernelOp{T,N,S,F<:Function} <: AbstractArray{T,N}
 end
 
 @inline function KernelOp(op::F,A::AbstractArray{T,N},dims::NTuple{N,Int}) where {T,N,F<:Function}
-    KernelOp{eltype(A),ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
+    v=CartesianIndices([first(A)])
+    testout=op(A,v,v[1])
+    KernelOp{eltype(testout),ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
 end
 
 @inline IndexStyle(::KernelOp) = IndexCartesian()
