@@ -50,3 +50,116 @@ show(stdout,"text/plain",f1.==f2)
  0  0  0  0  0
  0  0  0  0  0
 ```
+
+# Example: Conway's Game of life
+
+```julia
+using KernelOps
+b=[
+    0 0 0 1 1 0 0 0;
+    0 0 1 0 0 1 0 0;
+    0 1 0 0 0 0 1 0;
+    1 0 0 0 0 0 0 1;
+    1 0 0 0 0 0 0 1;
+    0 1 0 0 0 0 1 0;
+    0 0 1 0 0 1 0 0;
+    0 0 0 1 1 0 0 0;
+].==1
+cb=copy(b);
+```
+
+
+```julia
+function evolve(cells::AbstractMatrix)
+    game_of_life=KernelOp(cells,(1,1)) do M,Is,I
+        s=sum(M[Is])-M[I]
+        if M[I]
+            s<2 && return false
+            s<=3 && return true
+            return false
+        else
+            s==3 && return true
+        end
+        return M[I]
+    end
+    return game_of_life|>collect #add this collect, unless you want julia to suffer
+end
+```
+
+### Now let's test this fun bit of code
+
+```julia
+show(stdout,"text/plain",b)
+println("\n")
+for i in 1:100
+    b=evolve(b)
+    show(stdout,"text/plain",b)
+    println("\n")
+    if b==cb
+        print("Pattern repeats itself after $i iterations")
+        break;
+    end
+end
+```
+
+    8×8 BitArray{2}:
+     0  0  0  1  1  0  0  0
+     0  0  1  0  0  1  0  0
+     0  1  0  0  0  0  1  0
+     1  0  0  0  0  0  0  1
+     1  0  0  0  0  0  0  1
+     0  1  0  0  0  0  1  0
+     0  0  1  0  0  1  0  0
+     0  0  0  1  1  0  0  0
+
+    8×8 Array{Bool,2}:
+     0  0  0  1  1  0  0  0
+     0  0  1  1  1  1  0  0
+     0  1  0  0  0  0  1  0
+     1  1  0  0  0  0  1  1
+     1  1  0  0  0  0  1  1
+     0  1  0  0  0  0  1  0
+     0  0  1  1  1  1  0  0
+     0  0  0  1  1  0  0  0
+
+    8×8 Array{Bool,2}:
+     0  0  1  0  0  1  0  0
+     0  0  1  0  0  1  0  0
+     1  1  0  1  1  0  1  1
+     0  0  1  0  0  1  0  0
+     0  0  1  0  0  1  0  0
+     1  1  0  1  1  0  1  1
+     0  0  1  0  0  1  0  0
+     0  0  1  0  0  1  0  0
+
+    8×8 Array{Bool,2}:
+     0  0  0  0  0  0  0  0
+     0  0  1  0  0  1  0  0
+     0  1  0  1  1  0  1  0
+     0  0  1  0  0  1  0  0
+     0  0  1  0  0  1  0  0
+     0  1  0  1  1  0  1  0
+     0  0  1  0  0  1  0  0
+     0  0  0  0  0  0  0  0
+
+    8×8 Array{Bool,2}:
+     0  0  0  0  0  0  0  0
+     0  0  1  1  1  1  0  0
+     0  1  0  1  1  0  1  0
+     0  1  1  0  0  1  1  0
+     0  1  1  0  0  1  1  0
+     0  1  0  1  1  0  1  0
+     0  0  1  1  1  1  0  0
+     0  0  0  0  0  0  0  0
+
+    8×8 Array{Bool,2}:
+     0  0  0  1  1  0  0  0
+     0  0  1  0  0  1  0  0
+     0  1  0  0  0  0  1  0
+     1  0  0  0  0  0  0  1
+     1  0  0  0  0  0  0  1
+     0  1  0  0  0  0  1  0
+     0  0  1  0  0  1  0  0
+     0  0  0  1  1  0  0  0
+
+    Pattern repeats itself after 5 iterations
