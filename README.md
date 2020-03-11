@@ -55,7 +55,7 @@ show(stdout,"text/plain",f1.==f2)
 
 ```julia
 using KernelOps
-b=[
+b=Int8.([
     0 0 0 1 1 0 0 0;
     0 0 1 0 0 1 0 0;
     0 1 0 0 0 0 1 0;
@@ -64,21 +64,20 @@ b=[
     0 1 0 0 0 0 1 0;
     0 0 1 0 0 1 0 0;
     0 0 0 1 1 0 0 0;
-].==1
+])
 cb=copy(b);
 ```
-
 
 ```julia
 function evolve(cells::AbstractMatrix)
     game_of_life=KernelOp(cells,(1,1)) do M,Is,I
         s=sum(M[Is])-M[I]
-        if M[I]
-            s<2 && return false
-            s<=3 && return true
-            return false
+        if M[I]==1
+            s<2 && return Int8(0)
+            s<=3 && return Int8(1)
+            return Int8(0)
         else
-            s==3 && return true
+            s==3 && return Int8(1)
         end
         return M[I]
     end
@@ -102,7 +101,7 @@ for i in 1:100
 end
 ```
 
-    8×8 BitArray{2}:
+    8×8 Array{Int8,2}:
      0  0  0  1  1  0  0  0
      0  0  1  0  0  1  0  0
      0  1  0  0  0  0  1  0
@@ -112,7 +111,7 @@ end
      0  0  1  0  0  1  0  0
      0  0  0  1  1  0  0  0
 
-    8×8 Array{Bool,2}:
+    8×8 Array{Int8,2}:
      0  0  0  1  1  0  0  0
      0  0  1  1  1  1  0  0
      0  1  0  0  0  0  1  0
@@ -122,7 +121,7 @@ end
      0  0  1  1  1  1  0  0
      0  0  0  1  1  0  0  0
 
-    8×8 Array{Bool,2}:
+    8×8 Array{Int8,2}:
      0  0  1  0  0  1  0  0
      0  0  1  0  0  1  0  0
      1  1  0  1  1  0  1  1
@@ -132,7 +131,7 @@ end
      0  0  1  0  0  1  0  0
      0  0  1  0  0  1  0  0
 
-    8×8 Array{Bool,2}:
+    8×8 Array{Int8,2}:
      0  0  0  0  0  0  0  0
      0  0  1  0  0  1  0  0
      0  1  0  1  1  0  1  0
@@ -142,7 +141,7 @@ end
      0  0  1  0  0  1  0  0
      0  0  0  0  0  0  0  0
 
-    8×8 Array{Bool,2}:
+    8×8 Array{Int8,2}:
      0  0  0  0  0  0  0  0
      0  0  1  1  1  1  0  0
      0  1  0  1  1  0  1  0
@@ -152,7 +151,7 @@ end
      0  0  1  1  1  1  0  0
      0  0  0  0  0  0  0  0
 
-    8×8 Array{Bool,2}:
+    8×8 Array{Int8,2}:
      0  0  0  1  1  0  0  0
      0  0  1  0  0  1  0  0
      0  1  0  0  0  0  1  0
