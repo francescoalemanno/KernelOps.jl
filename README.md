@@ -69,7 +69,7 @@ cb=copy(b);
 ```
 
 ```julia
-function evolve(cells::AbstractMatrix)
+function evolve(cells)
     game_of_life=KernelOp(cells,(1,1)) do M,Is,I
         s=sum(M[Is])-M[I]
         if M[I]==1
