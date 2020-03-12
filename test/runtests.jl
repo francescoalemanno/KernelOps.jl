@@ -8,6 +8,7 @@ using Test
     end
     m/length(r)
 end
+
 @inline function op_max(A,r,c)
     m=A[r[1]]
     @simd for i in r
@@ -23,14 +24,17 @@ end
         @inbounds f1[I]==f2[I]
     end
 end
+
 @noinline function compare_kop(M,R)
     kop(M)==R
 end
+
 @testset "Basic Test" begin
     M=[exp(-(x-3)^2-(y-3)^2) for x in 1:5, y in 1:5]
     result=Bool[0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0]
     @test compare_kop(M,result)
 end
+
 @testset "Type Inference" begin
     M=rand(Bool,2,2)
     ko=KernelOp(M,(0,0)) do A,Is,I
