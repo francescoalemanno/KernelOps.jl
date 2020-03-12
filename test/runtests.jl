@@ -31,3 +31,11 @@ end
     result=Bool[0 0 0 0 0; 0 0 0 0 0; 0 0 1 0 0; 0 0 0 0 0; 0 0 0 0 0]
     @test compare_kop(M,result)
 end
+@testset "Type Inference" begin
+    M=rand(Bool,2,2)
+    ko=KernelOp(M,(0,0)) do A,Is,I
+        A[I] && return 0.5
+        return true
+    end
+    @test eltype(ko)==Union{Bool, Float64}
+end

@@ -17,8 +17,14 @@ end
 
 @inline function KernelOp(op::F,A::AbstractArray{T,N},dims::NTuple{N,Int}) where {T,N,F<:Function}
     v=CartesianIndices(ntuple(i->1,N))
-    testout=op(A,v,first(v))
-    KernelOp{eltype(testout),ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
+    ### Just in case compiler policy changes
+    ## testout=op(A,v,first(v))
+    ## KernelOp{eltype(testout),ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
+    type_A=typeof(A)
+    type_v=typeof(v)
+    type_elv=typeof(first(v))
+    rtypes=Base.return_types(op,(type_A,type_v,type_elv))
+    KernelOp{Union{rtypes...},ndims(A),typeof(A),F}(op,A,CartesianIndex(dims))
 end
 
 @inline IndexStyle(::KernelOp) = IndexCartesian()
